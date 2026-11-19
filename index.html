@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catégorie ESPN — Guide ASN n°8</title>
+<meta name="theme-color" content="#1f3a5f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Catégorie ESPN">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{--fond:#f4f6f9;--carte:#fff;--texte:#1b2430;--doux:#5b6878;--ligne:#d9dfe7;--accent:#1f3a5f;--accent2:#2f6db5;--alerte:#9a3412;--ok:#14532d;--rayon:12px}
+@media (prefers-color-scheme:dark){:root{--fond:#0f141b;--carte:#18202b;--texte:#e6ebf2;--doux:#9aa7b8;--ligne:#2a3544;--accent:#9cc3f5;--accent2:#7fb0f0;--alerte:#fdba74;--ok:#86efac}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fond);color:var(--texte)}
+header{background:var(--accent);color:#fff;padding:14px 16px}
+@media (prefers-color-scheme:dark){header{background:#1f3a5f}}
+header h1{margin:0;font-size:1.15rem;font-weight:650;letter-spacing:.01em}
+header p{margin:2px 0 0;font-size:.82rem;opacity:.85}
+main{max-width:680px;margin:0 auto;padding:12px 12px 40px}
+section{background:var(--carte);border:1px solid var(--ligne);border-radius:var(--rayon);padding:14px;margin:12px 0}
+h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--doux);margin:0 0 10px;font-weight:650}
+label.champ{display:block;margin:10px 0 4px;font-weight:600;font-size:.92rem}
+.aide{display:block;font-weight:400;color:var(--doux);font-size:.8rem}
+input[type=text],input[type=date],select,textarea{width:100%;font:inherit;font-size:16px;padding:10px 11px;border:1px solid var(--ligne);border-radius:9px;background:var(--fond);color:var(--texte)}
+textarea{min-height:64px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent2);outline-offset:1px}
+.grille{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+@media (max-width:420px){.grille{grid-template-columns:1fr}}
+.choix{display:flex;flex-wrap:wrap;gap:8px}
+.choix label{flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:6px;min-width:64px;padding:10px 12px;border:1px solid var(--ligne);border-radius:9px;background:var(--fond);cursor:pointer;font-size:.95rem;text-align:center}
+.choix input{position:absolute;opacity:0;pointer-events:none}
+.choix label:has(input:checked){border-color:var(--accent2);background:color-mix(in srgb,var(--accent2) 14%,var(--carte));font-weight:650}
+.case{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;font-size:.95rem}
+.case input{width:22px;height:22px;margin:0;flex:none;accent-color:var(--accent2)}
+.cache{display:none!important}
+.boutons{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+button{font:inherit;font-weight:650;padding:12px 16px;border-radius:10px;border:1px solid var(--accent2);background:var(--accent2);color:#fff;cursor:pointer;flex:1 1 140px}
+button.second{background:transparent;color:var(--accent2)}
+button:disabled{opacity:.45;cursor:not-allowed}
+#resultat{border-width:2px}
+.verdict{display:flex;align-items:center;gap:14px}
+.badge{flex:none;min-width:76px;height:76px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:750;background:var(--accent);color:#fff;padding:0 10px}
+.badge.neutre{background:var(--doux);font-size:1rem;text-align:center;line-height:1.15}
+.verdict .titre{font-size:1.05rem;font-weight:700}
+.verdict .sous{color:var(--doux);font-size:.88rem}
+dl.detail{display:grid;grid-template-columns:max-content 1fr;gap:4px 12px;margin:12px 0 0;font-size:.9rem}
+dl.detail dt{color:var(--doux)}
+dl.detail dd{margin:0}
+ul.msgs{margin:10px 0 0;padding-left:18px;font-size:.9rem}
+.note{font-size:.8rem;color:var(--doux);margin:8px 0 0}
+.erreur{color:var(--alerte);font-weight:600}
+.mentions p{font-size:.84rem;margin:6px 0}
+figure.abq{margin:14px 0 0}
+figure.abq svg{width:100%;height:auto;display:block;border:1px solid var(--ligne);border-radius:8px}
+figure.abq figcaption{font-size:.82rem;color:var(--doux);margin-top:6px}
+figure.abq figcaption b{color:var(--texte)}
+footer{text-align:center;color:var(--doux);font-size:.75rem;padding:8px 12px 24px}
+#fiche{display:none}
+/* ---------- Impression : fiche A4 ---------- */
+@media print{
+  @page{size:A4;margin:12mm 14mm 12mm}
+  body{background:#fff;color:#000;font:10.5pt/1.4 "Helvetica Neue",Arial,sans-serif}
+  header,main,footer{display:none!important}
+  #fiche{display:block}
+  #fiche h1{font-size:15pt;margin:0 0 2mm}
+  #fiche .ref{font-size:9pt;color:#333;margin:0 0 5mm}
+  #fiche h2{font-size:9pt;text-transform:uppercase;letter-spacing:.06em;color:#333;border-bottom:.6pt solid #000;padding-bottom:1mm;margin:4mm 0 1.5mm}
+  #fiche table{width:100%;border-collapse:collapse}
+  #fiche td{border:.5pt solid #888;padding:1.1mm 2.2mm;vertical-align:top}
+  #fiche td.l{width:38%;background:#f2f2f2;font-weight:600}
+  #fiche .cat{display:flex;align-items:center;gap:6mm;border:1.2pt solid #000;padding:2.5mm 5mm;margin-top:2mm}
+  #fiche .cat .val{font-size:22pt;font-weight:800;min-width:22mm;text-align:center}
+  #fiche .cat .val.txt{font-size:12pt;font-weight:700}
+  #fiche p{margin:1.5mm 0}
+  #fiche ul{margin:1mm 0;padding-left:5mm}
+  #fiche .pied{margin-top:4mm;font-size:8pt;color:#444;border-top:.5pt solid #888;padding-top:2mm}
+  #fiche section,#fiche .bloc{break-inside:avoid}
+  #fiche .duo{display:grid;grid-template-columns:1fr 1fr;gap:5mm}
+  #fiche .abqs{display:grid;gap:4mm;margin-top:3mm;break-inside:avoid}
+  #fiche .abqs.n2{grid-template-columns:1fr 1fr}
+  #fiche figure{margin:0;break-inside:avoid}
+  #fiche figure svg{width:100%;height:auto;display:block;margin:0 auto;border:.5pt solid #888}
+  #fiche .abqs.n1 figure svg{width:122mm}
+  #fiche figcaption{font-size:8pt;margin-top:1mm;text-align:center;line-height:1.3}
+  #fiche .mentions p{font-size:8.5pt;margin:1mm 0}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Catégorie d'un ESPN</h1>
+  <p>Guide ASN n°8, révision du 04/09/2012 — annexe 1</p>
+</header>
+<main>
+<form id="f" novalidate autocomplete="off">
+  <section>
+    <h2>Identification</h2>
+    <div class="grille">
+      <div><label class="champ" for="repere">Repère de l'équipement</label><input type="text" id="repere"></div>
+      <div><label class="champ" for="designation">Désignation</label><input type="text" id="designation"></div>
+      <div><label class="champ" for="affaire">Affaire / site</label><input type="text" id="affaire"></div>
+      <div><label class="champ" for="redacteur">Rédacteur</label><input type="text" id="redacteur"></div>
+      <div><label class="champ" for="date">Date</label><input type="date" id="date"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Équipement</h2>
+    <label class="champ" for="sorte">Sorte d'équipement</label>
+    <select id="sorte">
+      <option value="">— choisir —</option>
+      <option value="recipient">Récipient</option>
+      <option value="tuyauterie">Tuyauterie</option>
+      <option value="accessoire_pression">Accessoire sous pression</option>
+      <option value="accessoire_securite">Accessoire de sécurité</option>
+    </select>
+
+    <div id="blocSecu" class="cache">
+      <label class="case"><input type="checkbox" id="specifique"><span>Fabriqué pour des équipements spécifiques<span class="aide">Sinon : catégorie IV (tableau 6.1, note (1))</span></span></label>
+      <div id="blocProteges" class="cache">
+        <label class="champ">Catégories des équipements protégés<span class="aide">Cocher toutes les catégories présentes ; la plus élevée est retenue</span></label>
+        <div class="choix" id="proteges">
+          <label><input type="checkbox" value="0">0</label>
+          <label><input type="checkbox" value="1">I</label>
+          <label><input type="checkbox" value="2">II</label>
+          <label><input type="checkbox" value="3">III</label>
+          <label><input type="checkbox" value="4">IV</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="blocPression" class="cache">
+      <label class="champ">Niveau</label>
+      <div class="choix" id="niveau">
+        <label><input type="radio" name="niveau" value="N1">N1</label>
+        <label><input type="radio" name="niveau" value="N2">N2</label>
+        <label><input type="radio" name="niveau" value="N3">N3</label>
+        <label><input type="radio" name="niveau" value="ND">Non déterminé</label>
+      </div>
+      <label class="champ">État du fluide<span class="aide">Gaz : tension de vapeur à TS supérieure de plus de 0,5 bar à la pression atmosphérique normale (1 013 mbar)</span></label>
+      <div class="choix" id="etat">
+        <label><input type="radio" name="etat" value="gaz">Gaz</label>
+        <label><input type="radio" name="etat" value="liquide">Liquide</label>
+      </div>
+      <div id="blocGroupe" class="cache">
+        <label class="champ">Groupe du fluide<span class="aide">Exigé en N3</span></label>
+        <div class="choix" id="groupe">
+          <label><input type="radio" name="groupe" value="1">Groupe 1</label>
+          <label><input type="radio" name="groupe" value="2">Groupe 2</label>
+        </div>
+      </div>
+      <div class="grille">
+        <div><label class="champ" for="PS">PS (bar)</label><input type="text" id="PS" inputmode="decimal"></div>
+        <div id="blocV" class="cache"><label class="champ" for="V">V (L)</label><input type="text" id="V" inputmode="decimal"></div>
+        <div id="blocDN" class="cache"><label class="champ" for="DN">DN</label><input type="text" id="DN" inputmode="decimal"></div>
+        <div id="blocTS" class="cache"><label class="champ" for="TS">TS max (°C)<span class="aide">Utilisée pour l'exception TS &gt; 350 °C (figure 6)</span></label><input type="text" id="TS" inputmode="decimal"></div>
+      </div>
+      <p id="aideAcc" class="note cache">Accessoire sous pression : saisir V, DN ou les deux. Avec les deux, la catégorie la plus élevée est retenue (directive 2014/68/UE, annexe II, point 3).</p>
+      <label id="blocInstable" class="case cache"><input type="checkbox" id="instable"><span>Gaz instable<span class="aide">Catégorie I ou II portée à III (figures 1 et 5)</span></span></label>
+    </div>
+
+    <label class="champ" for="obs">Observations</label>
+    <textarea id="obs"></textarea>
+
+    <div class="boutons">
+      <button type="submit" id="btnCalc">Calculer</button>
+      <button type="button" class="second" id="btnRaz">Réinitialiser</button>
+    </div>
+  </section>
+</form>
+
+<section id="resultat" class="cache" aria-live="polite">
+  <h2>Résultat</h2>
+  <div id="resContenu"></div>
+  <div class="boutons"><button type="button" id="btnPrint">Imprimer / PDF</button></div>
+  <p id="printInfo" class="note cache"></p>
+</section>
+
+<section class="mentions">
+  <h2>Hypothèse et applicabilité</h2>
+  <p id="txtHypothese"></p>
+  <p id="txtApplicabilite"></p>
+</section>
+</main>
+<footer id="pied"></footer>
+
+<div id="fiche"></div>
+
+<script>
+/*
+ * espn-core.js — Module de calcul de la catégorie d'un ESPN
+ * Référentiel : Guide ASN n°8, version révisée du 04/09/2012, annexe 1 (tableau 6.1, figures 1 à 8).
+ * Équations : directive 2014/68/UE, annexe II (tableaux 1 à 4 et 6 à 9 ; points 2, 3 et 4).
+ * Table des règles : claude/phase2-table-des-regles-G8-2012.md (R00 à R80c, R04).
+ * Sans dépendance, sans réseau, sans stockage. Utilisable en navigateur (window.ESPN) et sous Node.
+ */
+(function (root) {
+  'use strict';
+
+  var ROMAIN = ['0', 'I', 'II', 'III', 'IV'];
+  var REFERENTIEL = 'Guide ASN n°8, version révisée du 04/09/2012 — annexe 1';
+  var EQUATIONS = 'Directive 2014/68/UE, annexe II';
+
+  // Produit arrondi pour éviter les artefacts de virgule flottante sur les frontières (Q1).
+  function prod(a, b) { return Math.round(a * b * 1e9) / 1e9; }
+  function num(x) { return typeof x === 'number' && isFinite(x); }
+
+  var FIGURES = {
+    1: { titre: 'Figure 1 — récipients, gaz (N1/N2, ou N3 groupe 1) (p. 54 ; tableau 1)', grandeur: 'V',
+      f: function (PS, V) { var p = prod(PS, V);
+        if (PS > 1000 || (V > 1 && p > 1000)) return [4, 'R10a'];
+        if ((V <= 1 && PS > 200) || (V > 1 && p > 200)) return [3, 'R10b'];
+        if (V > 1 && p > 50) return [2, 'R10c'];
+        if (V > 1 && p > 25) return [1, 'R10d'];
+        return [0, 'R10e']; } },
+    2: { titre: 'Figure 2 — récipients, gaz du groupe 2 (p. 55 ; tableau 2)', grandeur: 'V',
+      f: function (PS, V) { var p = prod(PS, V);
+        if (PS > 3000 || (V > 1 && p > 3000 && PS > 4)) return [4, 'R20a'];
+        if ((V <= 1 && PS > 1000) || (V > 1 && p > 1000)) return [3, 'R20b'];
+        if (V > 1 && p > 200) return [2, 'R20c'];
+        if (V > 1 && p > 50) return [1, 'R20d'];
+        return [0, 'R20e']; } },
+    3: { titre: 'Figure 3 — récipients, liquides (N1/N2, ou N3 groupe 1) (p. 56 ; tableau 3)', grandeur: 'V',
+      f: function (PS, V) { var p = prod(PS, V);
+        if (V > 1 && PS > 500) return [3, 'R30a'];
+        if ((V <= 1 && PS > 500) || (V > 1 && p > 200 && PS > 10)) return [2, 'R30b'];
+        if (V > 1 && p > 200) return [1, 'R30c'];
+        return [0, 'R30d']; } },
+    4: { titre: 'Figure 4 — récipients, liquides du groupe 2 (p. 57 ; tableau 4)', grandeur: 'V',
+      f: function (PS, V) { var p = prod(PS, V);
+        if (V > 10 && PS > 500 && p > 10000) return [2, 'R40a'];
+        if ((V <= 10 && PS > 1000) || (V > 10 && p > 10000 && PS > 10)) return [1, 'R40b'];
+        return [0, 'R40c']; } },
+    5: { titre: 'Figure 5 — tuyauteries, gaz (N1/N2, ou N3 groupe 1) (p. 58 ; tableau 6)', grandeur: 'DN',
+      f: function (PS, DN) { var p = prod(PS, DN);
+        if (DN > 350 || (DN > 100 && p > 3500)) return [3, 'R50a'];
+        if ((DN > 25 && DN <= 100 && p > 1000) || (DN > 100 && DN <= 350)) return [2, 'R50b'];
+        if (DN > 25) return [1, 'R50c'];
+        return [0, 'R50d']; } },
+    6: { titre: 'Figure 6 — tuyauteries, gaz du groupe 2 (p. 59 ; tableau 7)', grandeur: 'DN',
+      f: function (PS, DN) { var p = prod(PS, DN);
+        if (DN > 250 && p > 5000) return [3, 'R60a'];
+        if (DN > 100 && p > 3500) return [2, 'R60b'];
+        if (DN > 32 && p > 1000) return [1, 'R60c'];
+        return [0, 'R60d']; } },
+    7: { titre: 'Figure 7 — tuyauteries, liquides (N1/N2, ou N3 groupe 1) (p. 60 ; tableau 8)', grandeur: 'DN',
+      f: function (PS, DN) { var p = prod(PS, DN);
+        if (DN > 25 && PS > 500) return [3, 'R70a'];
+        if (DN > 25 && p > 2000 && PS > 10) return [2, 'R70b'];
+        if (DN > 25 && p > 2000) return [1, 'R70c'];
+        return [0, 'R70d']; } },
+    8: { titre: 'Figure 8 — tuyauteries, liquides du groupe 2 (p. 61 ; tableau 9)', grandeur: 'DN',
+      f: function (PS, DN) { var p = prod(PS, DN);
+        if (DN > 200 && PS > 500) return [2, 'R80a'];
+        if (DN > 200 && PS > 10 && p > 5000) return [1, 'R80b'];
+        return [0, 'R80c']; } }
+  };
+
+  // Aiguillage du tableau 6.1 (R01 récipients/V, R02 tuyauteries/DN).
+  function figurePour(type, niveau, etat, groupe) {
+    var gaz = etat === 'gaz';
+    if (niveau === 'N3') {
+      if (type === 'V') return gaz ? (groupe === 1 ? 1 : 2) : (groupe === 1 ? 3 : 4);
+      return gaz ? (groupe === 1 ? 5 : 6) : (groupe === 1 ? 7 : 8);
+    }
+    if (type === 'V') return gaz ? 1 : 3;
+    return gaz ? 5 : 7;
+  }
+
+  function resultat(statut, extra) {
+    var r = { statut: statut, categorie: null, libelle: null, regles: [], calculs: [], messages: [],
+      referentiel: REFERENTIEL, equations: EQUATIONS };
+    for (var k in extra) r[k] = extra[k];
+    return r;
+  }
+
+  // Calcul sur une figure, avec R03 (hors arrêté) et exceptions R11, R51, R61.
+  function calculFigure(fig, e, grandeurVal) {
+    var F = FIGURES[fig];
+    if (e.PS <= 0.5) return { figure: fig, titre: F.titre, grandeur: F.grandeur, valeur: grandeurVal, horsArrete: true, regles: ['R03'] };
+    var r = F.f(e.PS, grandeurVal), cat = r[0], catAbaque = r[0], regles = [r[1]], note = null;
+    if ((fig === 1 || fig === 5) && e.gazInstable === true && (cat === 1 || cat === 2)) {
+      cat = 3; regles.push(fig === 1 ? 'R11' : 'R51'); note = 'Gaz instable : catégorie I ou II portée à III';
+    }
+    if (fig === 6 && cat === 2) {
+      if (!num(e.TS)) return { figure: fig, titre: F.titre, incomplet: 'TS requise (exception TS > 350 °C, fig. 6)' };
+      if (e.TS > 350) { cat = 3; regles.push('R61'); note = 'TS > 350 °C : catégorie II portée à III'; }
+    }
+    return { figure: fig, titre: F.titre, grandeur: F.grandeur, valeur: grandeurVal, categorie: cat, categorieAbaque: catAbaque, regles: regles, note: note };
+  }
+
+  function classer(e) {
+    e = e || {};
+    var sortes = ['recipient', 'tuyauterie', 'accessoire_pression', 'accessoire_securite'];
+    if (sortes.indexOf(e.sorte) < 0) return resultat('saisie_incomplete', { messages: ['Sorte d\'équipement non renseignée'] });
+
+    // R00 / R00a — accessoires de sécurité
+    if (e.sorte === 'accessoire_securite') {
+      if (e.specifique !== true) {
+        return resultat('ok', { categorie: 4, libelle: 'IV', regles: ['R00'],
+          messages: ['Accessoire de sécurité : catégorie IV (tableau 6.1 note (1) ; 2014/68/UE ann. II pt 2)'] });
+      }
+      var c = e.categoriesProtegees;
+      if (!Array.isArray(c) || c.length === 0) return resultat('saisie_incomplete', { messages: ['Catégories des équipements protégés requises'] });
+      for (var i = 0; i < c.length; i++) {
+        if (!(c[i] === 0 || c[i] === 1 || c[i] === 2 || c[i] === 3 || c[i] === 4)) return resultat('saisie_invalide', { messages: ['Catégorie d\'équipement protégé invalide'] });
+      }
+      var m = Math.min(4, Math.max.apply(null, c));
+      return resultat('ok', { categorie: m, libelle: ROMAIN[m], regles: ['R00a'],
+        messages: ['Accessoire de sécurité fabriqué pour des équipements spécifiques : catégorie la plus élevée des équipements protégés (tableau 6.1 note (1) ; guide §2.2 et §4.7)'] });
+    }
+
+    // R00b — niveau
+    if (e.niveau === 'ND') return resultat('niveau_non_determine', { messages: ['Niveau N non déterminé : aucun calcul'] });
+    if (['N1', 'N2', 'N3'].indexOf(e.niveau) < 0) return resultat('saisie_incomplete', { messages: ['Niveau N1, N2 ou N3 requis'] });
+    if (e.etat !== 'gaz' && e.etat !== 'liquide') return resultat('saisie_incomplete', { messages: ['État du fluide (gaz / liquide) requis'] });
+    if (e.niveau === 'N3' && e.groupe !== 1 && e.groupe !== 2) return resultat('saisie_incomplete', { messages: ['Groupe du fluide requis en N3'] });
+    if (e.PS === undefined || e.PS === null || e.PS === '') return resultat('saisie_incomplete', { messages: ['PS requise'] });
+    if (!num(e.PS)) return resultat('saisie_invalide', { messages: ['PS invalide'] });
+
+    // Grandeurs utilisées
+    var types = [];
+    if (e.sorte === 'recipient') types = ['V'];
+    else if (e.sorte === 'tuyauterie') types = ['DN'];
+    else {
+      if (e.V !== undefined && e.V !== null && e.V !== '') types.push('V');
+      if (e.DN !== undefined && e.DN !== null && e.DN !== '') types.push('DN');
+      if (types.length === 0) return resultat('saisie_incomplete', { messages: ['V et/ou DN requis pour un accessoire sous pression'] });
+    }
+    for (var t = 0; t < types.length; t++) {
+      var val = e[types[t]];
+      if (val === undefined || val === null || val === '') return resultat('saisie_incomplete', { messages: [types[t] + ' requis'] });
+      if (!num(val) || val <= 0) return resultat('saisie_invalide', { messages: [types[t] + ' invalide (nombre > 0 attendu)'] });
+    }
+
+    var calculs = [];
+    for (var j = 0; j < types.length; j++) {
+      var fig = figurePour(types[j], e.niveau, e.etat, e.groupe);
+      var cf = calculFigure(fig, e, e[types[j]]);
+      if (cf.incomplet) return resultat('saisie_incomplete', { messages: [cf.incomplet] });
+      calculs.push(cf);
+    }
+
+    if (calculs[0].horsArrete) {
+      return resultat('hors_arrete', { regles: ['R03'], calculs: calculs, messages: ['PS ≤ 0,5 bar : hors arrêté'] });
+    }
+
+    var retenu = calculs[0], regles = calculs[0].regles.slice(), msgs = [];
+    if (calculs.length === 2) {
+      if (calculs[1].categorie > retenu.categorie) retenu = calculs[1];
+      regles = ['R01', 'R02', 'R04'];
+      msgs.push('V et DN saisis : catégorie la plus élevée retenue (2014/68/UE ann. II pt 3)');
+    }
+    calculs.forEach(function (cc) { if (cc.note) msgs.push(cc.note); });
+    return resultat('ok', { categorie: retenu.categorie, libelle: ROMAIN[retenu.categorie], figure: retenu.figure,
+      regles: regles, calculs: calculs, messages: msgs });
+  }
+
+  var API = { classer: classer, figurePour: figurePour, FIGURES: FIGURES, ROMAIN: ROMAIN,
+    REFERENTIEL: REFERENTIEL, EQUATIONS: EQUATIONS, version: '1.1.0' };
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+  else root.ESPN = API;
+})(this);
+
+</script>
+<script>
+/*
+ * espn-abaque.js — Tracé SVG des abaques (figures 1 à 8, guide ASN n°8 rév. 04/09/2012, annexe 1)
+ * et positionnement du point calculé par une croix rouge.
+ * Les zones colorées sont calculées par les fonctions de classement de espn-core.js (aucune autre source) ;
+ * les traits sont les lignes de démarcation des figures, contrôlées par test automatique (espn-tests.js).
+ * Sans dépendance. Navigateur : window.ESPN_ABAQUE ; Node : module.exports.
+ */
+(function (root) {
+  'use strict';
+  var INF = Infinity;
+  // Plages des axes (log10)
+  var AX = { V: [0.1, 100000], DN: [1, 100000], PS: [0.1, 10000] };
+
+  // Lignes de démarcation : [x1, PS1, x2, PS2, étiquette]  (x = V ou DN ; INF = bord du cadre)
+  var LIGNES = {
+    1: [[0, 200, 1, 200, 'PS = 200'], [0, 1000, 1, 1000, 'PS = 1000'], [1, 25, 1, 200, 'V = 1'],
+        [1, 25, 50, 0.5, 'PS·V = 25'], [1, 50, 100, 0.5, 'PS·V = 50'], [1, 200, 400, 0.5, 'PS·V = 200'], [1, 1000, 2000, 0.5, 'PS·V = 1000']],
+    2: [[0, 1000, 1, 1000, 'PS = 1000'], [0, 3000, 1, 3000, 'PS = 3000'], [1, 50, 1, 1000, 'V = 1'],
+        [1, 50, 100, 0.5, 'PS·V = 50'], [1, 200, 400, 0.5, 'PS·V = 200'], [1, 1000, 2000, 0.5, 'PS·V = 1000'],
+        [1, 3000, 750, 4, 'PS·V = 3000'], [750, 4, INF, 4, 'PS = 4']],
+    3: [[1, 200, 1, INF, 'V = 1'], [0, 500, INF, 500, 'PS = 500'], [1, 200, 400, 0.5, 'PS·V = 200'], [20, 10, INF, 10, 'PS = 10']],
+    4: [[0, 1000, 10, 1000, 'PS = 1000'], [10, 1000, 10, INF, 'V = 10'], [10, 1000, 1000, 10, 'PS·V = 10000'],
+        [20, 500, INF, 500, 'PS = 500'], [1000, 10, INF, 10, 'PS = 10']],
+    5: [[25, 0.5, 25, INF, 'DN = 25'], [100, 0.5, 100, 10, 'DN = 100'], [100, 35, 100, INF, 'DN = 100'],
+        [25, 40, 100, 10, 'PS·DN = 1000'], [100, 35, 350, 10, 'PS·DN = 3500'], [350, 0.5, 350, 10, 'DN = 350']],
+    6: [[32, 31.25, 32, INF, 'DN = 32'], [32, 31.25, 2000, 0.5, 'PS·DN = 1000'], [100, 35, 100, INF, 'DN = 100'],
+        [100, 35, 7000, 0.5, 'PS·DN = 3500'], [250, 20, 250, INF, 'DN = 250'], [250, 20, 10000, 0.5, 'PS·DN = 5000']],
+    7: [[25, 80, 25, INF, 'DN = 25'], [25, 80, 4000, 0.5, 'PS·DN = 2000'], [25, 500, INF, 500, 'PS = 500'], [200, 10, INF, 10, 'PS = 10']],
+    8: [[200, 25, 200, INF, 'DN = 200'], [200, 25, 500, 10, 'PS·DN = 5000'], [500, 10, INF, 10, 'PS = 10'], [200, 500, INF, 500, 'PS = 500']]
+  };
+  // Étiquettes de zones : [x, PS, catégorie]
+  var ZONES = {
+    1: [[0.25, 3, 0], [45, 0.85, 1], [40, 3, 2], [100, 5, 3], [0.3, 450, 3], [200, 50, 4], [0.3, 3000, 4]],
+    2: [[0.25, 10, 0], [30, 4, 1], [100, 5, 2], [300, 6, 3], [0.18, 1700, 3], [5000, 1.4, 3], [100, 100, 4], [0.18, 5500, 4]],
+    3: [[0.25, 10, 0], [1000, 3, 1], [1000, 70, 2], [0.3, 2000, 2], [1000, 2000, 3]],
+    4: [[1, 50, 0], [0.5, 3000, 1], [3000, 100, 1], [1000, 2000, 2]],
+    5: [[4, 10, 0], [50, 3, 1], [50, 300, 2], [200, 4, 2], [2000, 10, 3]],
+    6: [[5, 10, 0], [55, 200, 1], [160, 200, 2], [2000, 50, 3]],
+    7: [[4, 10, 0], [2000, 3, 1], [1000, 70, 2], [1000, 2000, 3]],
+    8: [[5, 10, 0], [2000, 70, 1], [2000, 2000, 2]]
+  };
+  var ROMAIN = ['0', 'I', 'II', 'III', 'IV'];
+  var TEINTE = ['#eef0f3', '#dbeafe', '#bfdbfe', '#93c5fd', '#60a5fa'];
+  var HORS = '#f7f7f7';
+
+  function L(v) { return Math.log(v) / Math.LN10; }
+  function cadre(fig) { return fig <= 4 ? AX.V : AX.DN; }
+
+  function svg(fig, classer, point, opts) {
+    opts = opts || {};
+    var W = 640, H = 470, ml = 62, mr = 26, mt = 14, mb = 50;
+    var pw = W - ml - mr, ph = H - mt - mb;
+    var xr = cadre(fig), yr = AX.PS, gx = fig <= 4 ? 'V' : 'DN';
+    var lx0 = L(xr[0]), lx1 = L(xr[1]), ly0 = L(yr[0]), ly1 = L(yr[1]);
+    function X(v) { v = v === 0 ? xr[0] : (v === INF ? xr[1] : v); return ml + (L(v) - lx0) / (lx1 - lx0) * pw; }
+    function Y(v) { v = v === INF ? yr[1] : v; return mt + ph - (L(v) - ly0) / (ly1 - ly0) * ph; }
+    var o = [];
+    o.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" class="abaque" role="img" aria-label="Abaque figure ' + fig + '" font-family="Helvetica, Arial, sans-serif">');
+    o.push('<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#fff"/>');
+    // Zones (échantillonnage des règles, regroupées par plages horizontales)
+    var NC = 160, NR = 120, cw = pw / NC, rh = ph / NR;
+    o.push('<g shape-rendering="crispEdges">');
+    for (var r = 0; r < NR; r++) {
+      var ps = Math.pow(10, ly1 - (r + 0.5) / NR * (ly1 - ly0));
+      var start = 0, prev = null;
+      for (var c = 0; c <= NC; c++) {
+        var cat = null;
+        if (c < NC) {
+          var xv = Math.pow(10, lx0 + (c + 0.5) / NC * (lx1 - lx0));
+          cat = ps <= 0.5 ? -1 : classer(ps, xv)[0];
+        }
+        if (c === NC || cat !== prev) {
+          if (prev !== null) o.push('<rect x="' + (ml + start * cw).toFixed(2) + '" y="' + (mt + r * rh).toFixed(2) + '" width="' + ((c - start) * cw + 0.4).toFixed(2) + '" height="' + (rh + 0.4).toFixed(2) + '" fill="' + (prev < 0 ? HORS : TEINTE[prev]) + '"/>');
+          start = c; prev = cat;
+        }
+      }
+    }
+    o.push('</g>');
+    // Quadrillage logarithmique
+    for (var d = Math.floor(lx0); d <= Math.ceil(lx1); d++) {
+      [1, 2, 5].forEach(function (m) { var v = m * Math.pow(10, d); if (v < xr[0] || v > xr[1]) return;
+        o.push('<line x1="' + X(v).toFixed(1) + '" y1="' + mt + '" x2="' + X(v).toFixed(1) + '" y2="' + (mt + ph) + '" stroke="#9aa5b1" stroke-width="' + (m === 1 ? 0.7 : 0.3) + '"/>');
+        if (m === 1) o.push('<text x="' + X(v).toFixed(1) + '" y="' + (mt + ph + 16) + '" font-size="12" text-anchor="middle" fill="#222">' + String(v).replace('.', ',') + '</text>');
+      });
+    }
+    for (var e = Math.floor(ly0); e <= Math.ceil(ly1); e++) {
+      [1, 2, 5].forEach(function (m) { var v = m * Math.pow(10, e); if (v < yr[0] || v > yr[1]) return;
+        o.push('<line x1="' + ml + '" y1="' + Y(v).toFixed(1) + '" x2="' + (ml + pw) + '" y2="' + Y(v).toFixed(1) + '" stroke="#9aa5b1" stroke-width="' + (m === 1 ? 0.7 : 0.3) + '"/>');
+        if (m === 1) o.push('<text x="' + (ml - 6) + '" y="' + (Y(v) + 4).toFixed(1) + '" font-size="12" text-anchor="end" fill="#222">' + String(v).replace('.', ',') + '</text>');
+      });
+    }
+    // PS = 0,5 et lignes de démarcation
+    o.push('<line x1="' + ml + '" y1="' + Y(0.5).toFixed(1) + '" x2="' + (ml + pw) + '" y2="' + Y(0.5).toFixed(1) + '" stroke="#111" stroke-width="2"/>');
+    LIGNES[fig].forEach(function (s) {
+      o.push('<line x1="' + X(s[0]).toFixed(1) + '" y1="' + Y(s[1]).toFixed(1) + '" x2="' + X(s[2]).toFixed(1) + '" y2="' + Y(s[3]).toFixed(1) + '" stroke="#111" stroke-width="2.2" stroke-linecap="round"/>');
+    });
+    // Étiquettes des lignes
+    LIGNES[fig].forEach(function (s) {
+      var x1 = X(s[0]), y1 = Y(s[1]), x2 = X(s[2]), y2 = Y(s[3]);
+      var vert = Math.abs(x1 - x2) < 0.5, hor = Math.abs(y1 - y2) < 0.5, tx, ty, rot = 0, anc = 'middle';
+      var lon = Math.hypot(x2 - x1, y2 - y1), fs = 10.5;
+      if (hor) { tx = Math.max(x1, x2) - 4; ty = y1 - 4; anc = 'end'; }
+      else if (vert) { tx = x1 - 4; ty = Math.min(y1, y2) + 34; rot = -90; if (s[3] !== INF) ty = (y1 + y2) / 2; }
+      else { var a = Math.atan2(y2 - y1, x2 - x1), q = lon < 110 ? 0.04 : 0.2; if (lon < 110) fs = 9; tx = x1 + q * (x2 - x1) + 7 * Math.sin(a); ty = y1 + q * (y2 - y1) - 7 * Math.cos(a); anc = 'start'; rot = a * 180 / Math.PI; }
+      o.push('<text x="' + tx.toFixed(1) + '" y="' + ty.toFixed(1) + '" font-size="' + fs + '" font-weight="600" fill="#111" text-anchor="' + anc + '"' + (rot ? ' transform="rotate(' + rot.toFixed(1) + ' ' + tx.toFixed(1) + ' ' + ty.toFixed(1) + ')"' : '') + ' paint-order="stroke" stroke="#fff" stroke-width="3">' + s[4] + '</text>');
+    });
+    // Étiquettes des zones
+    ZONES[fig].forEach(function (z) {
+      var t = z[2] === 0 ? 'Catégorie 0' : ROMAIN[z[2]];
+      var cx = X(z[0]), cy = Y(z[1]);
+      if (z[2] === 0) o.push('<text x="' + cx.toFixed(1) + '" y="' + (cy + 5).toFixed(1) + '" font-size="13" font-weight="700" fill="#334" text-anchor="middle" paint-order="stroke" stroke="#fff" stroke-width="3">' + t + '</text>');
+      else o.push('<circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="10.5" fill="#fff" stroke="#111" stroke-width="1.3"/><text x="' + cx.toFixed(1) + '" y="' + (cy + 4).toFixed(1) + '" font-size="11" font-weight="700" text-anchor="middle" fill="#111">' + t + '</text>');
+    });
+    o.push('<text x="' + (ml + pw / 2) + '" y="' + (Y(0.5) + (Y(0.1) - Y(0.5)) / 2 + 5).toFixed(1) + '" font-size="12.5" font-weight="700" fill="#555" text-anchor="middle">HORS ARRÊTÉ (PS ≤ 0,5 bar)</text>');
+    // Cadre et axes
+    o.push('<rect x="' + ml + '" y="' + mt + '" width="' + pw + '" height="' + ph + '" fill="none" stroke="#111" stroke-width="1.2"/>');
+    o.push('<text x="' + (ml + pw / 2) + '" y="' + (H - 10) + '" font-size="13" font-weight="700" text-anchor="middle">' + (gx === 'V' ? 'V (L)' : 'DN') + '</text>');
+    o.push('<text x="16" y="' + (mt + ph / 2) + '" font-size="13" font-weight="700" text-anchor="middle" transform="rotate(-90 16 ' + (mt + ph / 2) + ')">PS (bar)</text>');
+    // Croix rouge
+    if (point && point.x > 0 && point.ps !== undefined) {
+      var px = Math.min(Math.max(point.x, xr[0]), xr[1]), py = Math.min(Math.max(point.ps, yr[0]), yr[1]);
+      var hc = px !== point.x || py !== point.ps;
+      var cx2 = X(px), cy2 = Y(py), k = 11;
+      var croix = 'M' + (cx2 - k) + ' ' + (cy2 - k) + 'L' + (cx2 + k) + ' ' + (cy2 + k) + 'M' + (cx2 + k) + ' ' + (cy2 - k) + 'L' + (cx2 - k) + ' ' + (cy2 + k);
+      o.push('<path d="' + croix + '" stroke="#fff" stroke-width="8" stroke-linecap="round"/>');
+      o.push('<path d="' + croix + '" stroke="#e00000" stroke-width="4.2" stroke-linecap="round" class="croix"/>');
+      if (hc) o.push('<text x="' + (cx2 + (cx2 > ml + pw / 2 ? -16 : 16)) + '" y="' + (cy2 + (cy2 < mt + 20 ? 22 : -14)) + '" font-size="11" font-weight="700" fill="#e00000" text-anchor="' + (cx2 > ml + pw / 2 ? 'end' : 'start') + '" paint-order="stroke" stroke="#fff" stroke-width="3">point hors cadre, ramené au bord</text>');
+    }
+    o.push('</svg>');
+    return o.join('');
+  }
+
+  var API = { svg: svg, LIGNES: LIGNES, ZONES: ZONES, AX: AX };
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+  else root.ESPN_ABAQUE = API;
+})(this);
+
+</script>
+<script>
+(function(){
+'use strict';
+var E = window.ESPN;
+var HYPOTHESE = "Hypothèse : l'équipement est un équipement sous pression nucléaire (ESPN). Sa qualité d'ESPN, son niveau (N1, N2 ou N3), l'état et le groupe du fluide sont des données saisies par l'utilisateur : l'application ne les détermine pas et ne les vérifie pas.";
+var APPLICABILITE = "Catégorie de risque déterminée selon l'annexe 1 du guide ASN n°8 (version révisée du 04/09/2012), dont les figures reprennent l'annexe II de la directive 2014/68/UE. Les ensembles sont hors périmètre. Résultat d'aide à la décision : il ne remplace pas l'analyse réglementaire de l'équipement. L'utilisateur vérifie l'applicabilité de ce référentiel à la date d'utilisation.";
+var LIB_SORTE = {recipient:'Récipient', tuyauterie:'Tuyauterie', accessoire_pression:'Accessoire sous pression', accessoire_securite:'Accessoire de sécurité'};
+var LIB_NIV = {N1:'N1',N2:'N2',N3:'N3',ND:'Non déterminé'};
+var $ = function(id){return document.getElementById(id);};
+var dernier = null;
+
+$('txtHypothese').textContent = HYPOTHESE;
+$('txtApplicabilite').textContent = APPLICABILITE;
+$('pied').textContent = 'Module de calcul v' + E.version + ' — ' + E.REFERENTIEL + ' ; ' + E.EQUATIONS + '. Aucune donnée n\'est enregistrée ni transmise.';
+
+function aujourdhui(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+$('date').value = aujourdhui();
+
+function radio(name){var r=document.querySelector('input[name="'+name+'"]:checked');return r?r.value:'';}
+function nombre(id){var s=$(id).value.trim();if(s==='')return '';s=s.replace(/\s/g,'').replace(',','.');if(!/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(s))return NaN;return Number(s);}
+function show(id,on){$(id).classList.toggle('cache',!on);}
+
+function majVisibilite(){
+  var s=$('sorte').value, niv=radio('niveau'), etat=radio('etat'), grp=radio('groupe');
+  var secu = s==='accessoire_securite';
+  show('blocSecu', secu);
+  show('blocProteges', secu && $('specifique').checked);
+  show('blocPression', !!s && !secu);
+  show('blocGroupe', niv==='N3');
+  var avecV = s==='recipient'||s==='accessoire_pression', avecDN = s==='tuyauterie'||s==='accessoire_pression';
+  show('blocV', avecV); show('blocDN', avecDN);
+  show('aideAcc', s==='accessoire_pression');
+  show('blocInstable', etat==='gaz' && niv!=='N3' || etat==='gaz' && grp==='1');
+  show('blocTS', avecDN && niv==='N3' && etat==='gaz' && grp==='2');
+}
+
+function saisie(){
+  var s=$('sorte').value, e={sorte:s};
+  if(s==='accessoire_securite'){
+    e.specifique=$('specifique').checked;
+    e.categoriesProtegees=[].slice.call(document.querySelectorAll('#proteges input:checked')).map(function(i){return Number(i.value);});
+    return e;
+  }
+  e.niveau=radio('niveau'); e.etat=radio('etat');
+  var g=radio('groupe'); e.groupe = e.niveau==='N3' && g ? Number(g) : null;
+  e.PS=nombre('PS');
+  if(!$('blocV').classList.contains('cache')) e.V=nombre('V');
+  if(!$('blocDN').classList.contains('cache')) e.DN=nombre('DN');
+  if(!$('blocTS').classList.contains('cache')){var ts=nombre('TS'); if(ts!=='') e.TS=ts;}
+  e.gazInstable = !$('blocInstable').classList.contains('cache') && $('instable').checked;
+  return e;
+}
+
+function fmt(x){return (typeof x==='number')? String(Math.round(x*1e6)/1e6).replace('.',','):x;}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+var LIB_STATUT = {
+  hors_arrete:['Hors arrêté','PS ≤ 0,5 bar'],
+  niveau_non_determine:['Niveau N non déterminé','Aucun calcul : le niveau doit être déterminé au préalable'],
+  saisie_incomplete:['Saisie incomplète','Compléter les données'],
+  saisie_invalide:['Saisie invalide','Corriger les valeurs']
+};
+
+function lignesSaisie(e){
+  var L=[['Sorte',LIB_SORTE[e.sorte]||'—']];
+  if(e.sorte==='accessoire_securite'){
+    L.push(['Fabriqué pour des équipements spécifiques', e.specifique?'Oui':'Non']);
+    if(e.specifique) L.push(['Catégories des équipements protégés', e.categoriesProtegees.length? e.categoriesProtegees.map(function(c){return E.ROMAIN[c];}).join(', '):'—']);
+    return L;
+  }
+  L.push(['Niveau', LIB_NIV[e.niveau]||'—']);
+  L.push(['État du fluide', e.etat? (e.etat==='gaz'?'Gaz':'Liquide'):'—']);
+  if(e.niveau==='N3') L.push(['Groupe du fluide', e.groupe? 'Groupe '+e.groupe:'—']);
+  L.push(['PS', e.PS===''?'—':fmt(e.PS)+' bar']);
+  if('V' in e) L.push(['V', e.V===''?'—':fmt(e.V)+' L']);
+  if('DN' in e) L.push(['DN', e.DN===''?'—':fmt(e.DN)]);
+  if('TS' in e) L.push(['TS max', fmt(e.TS)+' °C']);
+  if(!$('blocInstable').classList.contains('cache')) L.push(['Gaz instable', e.gazInstable?'Oui':'Non']);
+  return L;
+}
+
+function detailCalculs(r, e){
+  var out=[];
+  (r.calculs||[]).forEach(function(c){
+    var t=c.titre;
+    if(c.horsArrete){out.push(t+' : hors arrêté (PS ≤ 0,5 bar)');return;}
+    var p = c.grandeur==='V' ? 'PS·V = '+fmt(Math.round(e.PS*c.valeur*1e9)/1e9)+' bar·L' : 'PS·DN = '+fmt(Math.round(e.PS*c.valeur*1e9)/1e9)+' bar';
+    out.push(t+' : '+p+' → catégorie '+E.ROMAIN[c.categorie]+' ('+c.regles.join(', ')+')');
+  });
+  return out;
+}
+
+function abaques(r, e){
+  var h='', n=0;
+  (r.calculs||[]).forEach(function(c){
+    if(!c.figure) return; n++;
+    var svg=window.ESPN_ABAQUE.svg(c.figure, E.FIGURES[c.figure].f, {x:c.valeur, ps:e.PS});
+    var g=c.grandeur==='V'?'V = '+fmt(c.valeur)+' L':'DN = '+fmt(c.valeur);
+    var lu=c.horsArrete?'hors arrêté':'catégorie '+E.ROMAIN[c.categorieAbaque];
+    var pr = c.grandeur==='V' ? 'PS·V = '+fmt(Math.round(e.PS*c.valeur*1e9)/1e9)+' bar·L' : 'PS·DN = '+fmt(Math.round(e.PS*c.valeur*1e9)/1e9)+' bar';
+    var cap='<b>'+esc(c.titre)+'</b><br>Croix rouge : '+esc(g)+' ; PS = '+esc(fmt(e.PS))+' bar ('+esc(pr)+') — zone de l\'abaque : '+esc(lu);
+    if(!c.horsArrete && c.categorie!==c.categorieAbaque) cap+=' ; catégorie retenue après exception : '+E.ROMAIN[c.categorie];
+    var k=1+1e-7, sur = e.PS>0.5 ? E.FIGURES[c.figure].f(e.PS*k, c.valeur*k)[0]!==c.categorieAbaque || E.FIGURES[c.figure].f(e.PS*k, c.valeur)[0]!==c.categorieAbaque || E.FIGURES[c.figure].f(e.PS, c.valeur*k)[0]!==c.categorieAbaque : e.PS===0.5;
+    if(sur) cap+='. Point sur une ligne de démarcation : catégorie inférieure retenue (2014/68/UE, annexe II, point 4)';
+    h+='<figure class="abq">'+svg+'<figcaption>'+cap+'</figcaption></figure>';
+  });
+  return n ? '<div class="abqs n'+n+'">'+h+'</div>' : '';
+}
+
+function afficher(r, e){
+  var h='';
+  if(r.statut==='ok'){
+    h+='<div class="verdict"><div class="badge">'+r.libelle+'</div><div><div class="titre">Catégorie '+r.libelle+'</div><div class="sous">'+esc(LIB_SORTE[e.sorte])+(e.niveau?' — niveau '+esc(LIB_NIV[e.niveau]):'')+'</div></div></div>';
+  } else {
+    var s=LIB_STATUT[r.statut];
+    h+='<div class="verdict"><div class="badge neutre">'+esc(s[0])+'</div><div><div class="titre">'+esc(s[0])+'</div><div class="sous">'+esc(s[1])+'</div></div></div>';
+  }
+  var det=detailCalculs(r,e);
+  h+='<dl class="detail">';
+  if(det.length) h+='<dt>Calcul</dt><dd>'+det.map(esc).join('<br>')+'</dd>';
+  if(r.regles&&r.regles.length) h+='<dt>Règles</dt><dd>'+esc(r.regles.join(', '))+'</dd>';
+  h+='</dl>';
+  if(r.messages&&r.messages.length) h+='<ul class="msgs">'+r.messages.map(function(m){return '<li'+(r.statut.indexOf('saisie')===0?' class="erreur"':'')+'>'+esc(m)+'</li>';}).join('')+'</ul>';
+  h+=abaques(r,e);
+  $('resContenu').innerHTML=h;
+  show('resultat',true);
+  $('btnPrint').disabled = !(r.statut==='ok'||r.statut==='hors_arrete'||r.statut==='niveau_non_determine');
+  $('resultat').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function construireFiche(r, e){
+  var id=[['Repère',$('repere').value],['Désignation',$('designation').value],['Affaire / site',$('affaire').value],['Rédacteur',$('redacteur').value],['Date',$('date').value?$('date').value.split('-').reverse().join('/'):'']];
+  function table(L){return '<table>'+L.map(function(l){return '<tr><td class="l">'+esc(l[0])+'</td><td>'+esc(l[1]||'—')+'</td></tr>';}).join('')+'</table>';}
+  var val = r.statut==='ok' ? '<div class="val">'+r.libelle+'</div><div><b>Catégorie '+r.libelle+'</b></div>' : '<div class="val txt">'+esc(LIB_STATUT[r.statut][0])+'</div><div>'+esc(LIB_STATUT[r.statut][1])+'</div>';
+  var det=detailCalculs(r,e);
+  var now=new Date();
+  var h='<h1>Catégorie d\'un équipement sous pression nucléaire</h1>'+
+    '<p class="ref">'+esc(E.REFERENTIEL)+' — '+esc(E.EQUATIONS)+'</p>'+
+    '<div class="duo"><div class="bloc"><h2>Identification</h2>'+table(id)+'</div>'+
+    '<div class="bloc"><h2>Données saisies</h2>'+table(lignesSaisie(e))+'</div></div>'+
+    '<div class="bloc"><h2>Résultat</h2><div class="cat">'+val+'</div>'+
+    (det.length&&!r.calculs.some(function(c){return c.figure;})?'<p><b>Calcul :</b></p><ul>'+det.map(function(d){return '<li>'+esc(d)+'</li>';}).join('')+'</ul>':'')+
+    (r.regles&&r.regles.length?'<p><b>Règles appliquées :</b> '+esc(r.regles.join(', '))+'</p>':'')+
+    (r.messages&&r.messages.length?'<ul>'+r.messages.map(function(m){return '<li>'+esc(m)+'</li>';}).join('')+'</ul>':'')+'</div>'+
+    abaques(r,e)+
+    ($('obs').value.trim()?'<div class="bloc"><h2>Observations</h2><p>'+esc($('obs').value).replace(/\n/g,'<br>')+'</p></div>':'')+
+    '<div class="bloc mentions"><h2>Hypothèse et applicabilité</h2><p>'+esc(HYPOTHESE)+'</p><p>'+esc(APPLICABILITE)+'</p></div>'+
+    '<p class="pied">Fiche éditée le '+now.toLocaleDateString('fr-FR')+' à '+now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+' — module de calcul v'+esc(E.version)+'. Règles R00 à R80c : table des règles validée le 19/11/2026.</p>';
+  $('fiche').innerHTML=h;
+}
+
+function invalider(){ if(dernier){dernier=null; show('resultat',false); $('fiche').innerHTML='';} }
+
+$('f').addEventListener('input', function(){majVisibilite(); invalider();});
+$('f').addEventListener('change', function(){majVisibilite(); invalider();});
+$('f').addEventListener('submit', function(ev){
+  ev.preventDefault(); majVisibilite();
+  var e=saisie(), r=E.classer(e);
+  dernier={r:r,e:e}; afficher(r,e); construireFiche(r,e);
+});
+$('btnRaz').addEventListener('click', function(){
+  $('f').reset(); $('date').value=aujourdhui(); majVisibilite(); dernier=null; show('resultat',false); $('fiche').innerHTML='';
+});
+var dansCadre = (function(){try{return window.self!==window.top;}catch(x){return true;}})();
+$('btnPrint').addEventListener('click', function(){
+  if(!dernier) return;
+  construireFiche(dernier.r, dernier.e);
+  if(dansCadre){ $('printInfo').textContent="L'impression n'est pas disponible dans cet aperçu. Elle fonctionne dans l'application installée (Partager › Imprimer, puis Enregistrer en PDF)."; show('printInfo',true); return; }
+  try{ window.print(); }catch(x){ $('printInfo').textContent="Impression refusée par le navigateur."; show('printInfo',true); }
+});
+majVisibilite();
+if('serviceWorker' in navigator && location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(function(){});}
+})();
+</script>
+</body>
+</html>
